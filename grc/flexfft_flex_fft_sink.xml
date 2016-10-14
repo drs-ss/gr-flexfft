@@ -1,0 +1,456 @@
+<?xml version="1.0"?>
+<block>
+  <name>Flex FFT Sink</name>
+  <key>flexfft_flex_fft_sink</key>
+  <category>DRS Blocks</category>
+  <import>import flexfft</import>
+  <import>import sip</import>
+  <import>from gnuradio import qtgui</import>
+  <import>from PyQt4 import Qt</import>
+  <make>#set $win = 'self._%s_win'%$id
+flexfft.flex_fft_sink($type.size)
+self.$(id).set_update_time($update_time)
+self.$(id).set_y_axis($ymin, $ymax)
+
+self.$(id).set_y_label($ylabel, $yunit)
+
+self.$(id).enable_tags(-1, $entags)
+self.$(id).set_trigger_mode($tr_mode, qtgui.TRIG_SLOPE_POS, $tr_level, 0, 0, $tr_tag)
+self.$(id).enable_autoscale($autoscale)
+self.$(id).enable_grid($grid)
+self.$(id).enable_control_panel($ctrlpanel)
+
+self.$(id).set_title($name)
+
+self.$(id).set_line_label(0, $label1)
+self.$(id).set_line_color(0, $color1)
+self.$(id).set_line_width(0, $width1)
+self.$(id).set_line_style(0, $style1)
+self.$(id).set_line_marker(0, $marker1)
+self.$(id).set_line_alpha(0, $alpha1)
+self.$(id).set_stream_id($stream_id)
+self.$(id).set_auto_adjust($autoadjust)
+
+if not $legend:
+  self.$(id).disable_legend()
+
+self._$(id)_win = sip.wrapinstance(self.$(id).pyqwidget(), Qt.QWidget)
+$(gui_hint()($win))</make>
+  <callback>set_time_domain_axis($min, $max)</callback>
+  <callback>set_update_time($update_time)</callback>
+  <callback>set_title($name)</callback>
+  <callback>set_stream_id($stream_id)</callback>
+  <callback>set_color($which, $color)</callback>
+  <callback>set_y_axis($ymin, $ymax)</callback>
+  <callback>set_auto_adjust($autoadjust)</callback>
+  <callback>self.$(id).set_trigger_mode($tr_mode, qtgui.TRIG_SLOPE_POS, $tr_level, 0, 0, $tr_tag)</callback>
+
+  <param_tab_order>
+    <tab>General</tab>
+    <tab>Trigger</tab>
+    <tab>Config</tab>
+  </param_tab_order>
+
+  <param>
+    <name>Name</name>
+    <key>name</key>
+    <value>""</value>
+    <type>string</type>
+    <hide>#if len($name()) > 0 then 'none' else 'part'#</hide>
+  </param>
+
+  <param>
+      <name>Input Type</name>
+      <key>type</key>
+      <type>enum</type>
+      <option>
+          <name>Float</name>
+          <key>float</key>
+          <opt>size:gr.sizeof_float</opt>
+      </option>
+      <option>
+          <name>Byte</name>
+          <key>byte</key>
+          <opt>size:gr.sizeof_char</opt>
+      </option>
+  </param>
+
+  <param>
+      <name>Stream ID</name>
+      <key>stream_id</key>
+      <value>-1</value>
+      <type>int</type>
+      <hide>#if str($type) == "byte" then 'none' else 'all'</hide>
+  </param>
+
+  <param>
+    <name>Y Axis Label</name>
+    <key>ylabel</key>
+    <value>Amplitude</value>
+    <type>string</type>
+    <hide>part</hide>
+  </param>
+
+  <param>
+    <name>Y Axis Unit</name>
+    <key>yunit</key>
+    <value>dBm</value>
+    <type>string</type>
+    <hide>part</hide>
+  </param>
+
+  <param>
+    <name>Grid</name>
+    <key>grid</key>
+    <value>False</value>
+    <type>enum</type>
+    <hide>part</hide>
+    <option>
+      <name>Yes</name>
+      <key>True</key>
+    </option>
+    <option>
+      <name>No</name>
+      <key>False</key>
+    </option>
+  </param>
+
+  <param>
+    <name>Autoscale</name>
+    <key>autoscale</key>
+    <value>False</value>
+    <type>enum</type>
+    <hide>part</hide>
+    <option>
+      <name>Yes</name>
+      <key>True</key>
+    </option>
+    <option>
+      <name>No</name>
+      <key>False</key>
+    </option>
+  </param>
+
+  <param>
+    <name>Auto Adjust</name>
+    <key>autoadjust</key>
+    <value>True</value>
+    <type>enum</type>
+    <hide>part</hide>
+    <option>
+      <name>Yes</name>
+      <key>True</key>
+    </option>
+    <option>
+      <name>No</name>
+      <key>False</key>
+    </option>
+  </param>
+
+  <param>
+    <name>Y min</name>
+    <key>ymin</key>
+    <value>-1</value>
+    <type>float</type>
+    <hide>#if $autoadjust() == "True" then 'all' else 'part'#</hide>
+  </param>
+
+  <param>
+    <name>Y max</name>
+    <key>ymax</key>
+    <value>1</value>
+    <type>float</type>
+    <hide>#if $autoadjust() == "True" then 'all' else 'part'#</hide>
+  </param>
+
+  <param>
+    <name>Update Period</name>
+    <key>update_time</key>
+    <value>0.10</value>
+    <type>float</type>
+    <hide>part</hide>
+  </param>
+
+  <param>
+    <name>Disp. Tags</name>
+    <key>entags</key>
+    <value>True</value>
+    <type>enum</type>
+    <hide>part</hide>
+    <option>
+      <name>Yes</name>
+      <key>True</key>
+    </option>
+    <option>
+      <name>No</name>
+      <key>False</key>
+    </option>
+  </param>
+
+  <param>
+    <name>GUI Hint</name>
+    <key>gui_hint</key>
+    <value></value>
+    <type>gui_hint</type>
+    <hide>part</hide>
+  </param>
+
+
+  <param>
+    <name>Trigger Mode</name>
+    <key>tr_mode</key>
+    <value>qtgui.TRIG_MODE_FREE</value>
+    <type>enum</type>
+    <hide>part</hide>
+    <option>
+      <name>Free</name>
+      <key>qtgui.TRIG_MODE_FREE</key>
+    </option>
+    <option>
+      <name>Auto</name>
+      <key>qtgui.TRIG_MODE_AUTO</key>
+    </option>
+    <option>
+      <name>Normal</name>
+      <key>qtgui.TRIG_MODE_NORM</key>
+    </option>
+    <option>
+      <name>Tag</name>
+      <key>qtgui.TRIG_MODE_TAG</key>
+    </option>
+    <tab>Trigger</tab>
+  </param>
+
+  <param>
+    <name>Trigger Level</name>
+    <key>tr_level</key>
+    <value>0.0</value>
+    <type>float</type>
+    <hide>part</hide>
+    <tab>Trigger</tab>
+  </param>
+
+  <param>
+    <name>Trigger Tag Key</name>
+    <key>tr_tag</key>
+    <value>""</value>
+    <type>string</type>
+    <hide>part</hide>
+    <tab>Trigger</tab>
+  </param>
+
+
+
+  <!-- Begin Config Tab items -->
+
+  <param>
+    <name>Control Panel</name>
+    <key>ctrlpanel</key>
+    <value>False</value>
+    <type>enum</type>
+    <hide>part</hide>
+    <option>
+      <name>Yes</name>
+      <key>True</key>
+    </option>
+    <option>
+      <name>No</name>
+      <key>False</key>
+    </option>
+    <tab>Config</tab>
+  </param>
+
+  <param>
+    <name>Legend</name>
+    <key>legend</key>
+    <value>True</value>
+    <type>enum</type>
+    <hide>part</hide>
+    <option>
+      <name>Yes</name>
+      <key>True</key>
+    </option>
+    <option>
+      <name>No</name>
+      <key>False</key>
+    </option>
+    <tab>Config</tab>
+  </param>
+
+  <param>
+    <name>Line Label</name>
+    <key>label1</key>
+    <value>"FFT Data"</value>
+    <type>string</type>
+    <hide>part</hide>
+    <tab>Config</tab>
+  </param>
+
+  <param>
+    <name>Line Width</name>
+    <key>width1</key>
+    <value>1</value>
+    <type>int</type>
+    <hide>part</hide>
+    <tab>Config</tab>
+  </param>
+
+  <param>
+    <name>Line Color</name>
+    <key>color1</key>
+    <type>enum</type>
+    <hide>part</hide>
+    <option>
+      <name>Blue</name>
+      <key>"blue"</key>
+    </option>
+    <option>
+      <name>Red</name>
+      <key>"red"</key>
+    </option>
+    <option>
+      <name>Green</name>
+      <key>"green"</key>
+    </option>
+    <option>
+      <name>Black</name>
+      <key>"black"</key>
+    </option>
+    <option>
+      <name>Cyan</name>
+      <key>"cyan"</key>
+    </option>
+    <option>
+      <name>Magenta</name>
+      <key>"magenta"</key>
+    </option>
+    <option>
+      <name>Yellow</name>
+      <key>"yellow"</key>
+    </option>
+    <option>
+      <name>Dark Red</name>
+      <key>"dark red"</key>
+    </option>
+    <option>
+      <name>Dark Green</name>
+      <key>"dark green"</key>
+    </option>
+    <option>
+      <name>Dark Blue</name>
+      <key>"Dark Blue"</key>
+    </option>
+    <tab>Config</tab>
+  </param>
+
+  <param>
+    <name>Line Style</name>
+    <key>style1</key>
+    <type>enum</type>
+    <hide>part</hide>
+    <option>
+      <name>Solid</name>
+      <key>1</key>
+    </option>
+    <option>
+      <name>Dash</name>
+      <key>2</key>
+    </option>
+    <option>
+      <name>Dots</name>
+      <key>3</key>
+    </option>
+    <option>
+      <name>Dash-Dot</name>
+      <key>4</key>
+    </option>
+    <option>
+      <name>Dash-Dot-Dot</name>
+      <key>5</key>
+    </option>
+    <option>
+      <name>None</name>
+      <key>0</key>
+    </option>
+    <tab>Config</tab>
+  </param>
+
+  <param>
+    <name>Line Marker</name>
+    <key>marker1</key>
+    <type>enum</type>
+    <hide>part</hide>
+    <option>
+      <name>None</name>
+      <key>-1</key>
+    </option>
+    <option>
+      <name>Circle</name>
+      <key>0</key>
+    </option>
+    <option>
+      <name>Rectangle</name>
+      <key>1</key>
+    </option>
+    <option>
+      <name>Diamond</name>
+      <key>2</key>
+    </option>
+    <option>
+      <name>Triangle</name>
+      <key>3</key>
+    </option>
+    <option>
+      <name>Down Triangle</name>
+      <key>4</key>
+    </option>
+    <option>
+      <name>Left Triangle</name>
+      <key>6</key>
+    </option>
+    <option>
+      <name>Right Triangle</name>
+      <key>7</key>
+    </option>
+    <option>
+      <name>Cross</name>
+      <key>8</key>
+    </option>
+    <option>
+      <name>X-Cross</name>
+      <key>9</key>
+    </option>
+    <tab>Config</tab>
+  </param>
+
+  <param>
+    <name>Line Alpha</name>
+    <key>alpha1</key>
+    <value>1.0</value>
+    <type>float</type>
+    <hide>part</hide>
+    <tab>Config</tab>
+  </param>
+
+  <sink>
+    <name>in</name>
+    <type>$type</type>
+    <nports>1</nports>
+  </sink>
+  <doc>
+This block is a modified version of the GNURadio TimeSink designed for 
+Flex FFT packets (through a byte input stream) or Flex FFT data (from the
+gr-polaris block).
+
+No command and control is offered through this block, to start/stop streaming
+please use the gr-polaris block or a mnemonic app session.
+
+This block will automatically adjust it's x axis values based on context packet
+information from Flex FFT stream.  If "Auto Adjust" is enabled, it will also adjust
+the Y axis to fit the Flex FFT output.
+
+The GUI hint can be used to position the widget within the application. \
+The hint is of the form [tab_id@tab_index]: [row, col, row_span, col_span]. \
+Both the tab specification and the grid position are optional.
+  </doc>
+</block>

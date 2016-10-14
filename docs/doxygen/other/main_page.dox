@@ -1,0 +1,13 @@
+/*! \mainpage
+
+Welcome to the GNU Radio FlexFFT Block
+
+This is the intro page for the Doxygen manual generated for the FlexFFT
+block (docs/doxygen/other/main_page.dox). The FlexFFT sink is designed
+to display FlexFFT packets from either the gr-polaris block or directly
+from the radio.
+
+This block is a modified copy of the "in tree" block time_sink_f taken
+from the gr-qtgui module of GNURadio.
+
+*/
